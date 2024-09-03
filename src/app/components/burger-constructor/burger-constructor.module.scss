@@ -1,0 +1,29 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: self-end;
+
+	.ingredient {
+		margin: 0 10px;
+	}
+
+	.list {
+		margin: 0;
+		padding: 0;
+		overflow-y: scroll;
+		height: 50vh;
+	}
+}
+
+.order_block {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	width: 100%;
+	margin-bottom: 52px;
+}
+
+.total_price {
+	composes: mr-10 text text_type_digits-medium from global;
+}
