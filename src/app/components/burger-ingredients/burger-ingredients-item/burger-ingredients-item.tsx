@@ -14,7 +14,7 @@ function BurgerIngredientsItem(props: BurgerIngredientItemProps) {
 
 	return (
 		<div data-id={id} className={styles.item} onClick={onClick}>
-			<img src={img} alt='Фото добавки' />
+			<img src={img} alt={name} />
 			<span className={styles.count}>2</span>
 			<div className={styles.wrapper_price}>
 				{price}

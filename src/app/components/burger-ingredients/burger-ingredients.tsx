@@ -5,6 +5,7 @@ import styles from './burger-ingredients.module.scss';
 import { IngredientsProp } from './../../const';
 import Modal from '../modal/modal';
 import IngredientDetails from '../modal/ingredient-details/ingredient-details';
+import { useModal } from '../hooks/useModal';
 
 interface BurgerIngredientsProp {
 	ingredients: IngredientsProp[];
@@ -15,7 +16,7 @@ export default function BurgerIngredients({
 }: BurgerIngredientsProp) {
 	const [current, setCurrent] = useState('buns');
 	const [ingredient, setIngredient] = useState<IngredientsProp | null>(null);
-	const [modalIsOpen, setModalIsOpen] = useState(false);
+	const { modalIsOpen, openModal, closeModal } = useModal();
 
 	const sortByTypeIngredients = (ingredients: IngredientsProp[]) => {
 		const buns: IngredientsProp[] = [];
@@ -42,7 +43,7 @@ export default function BurgerIngredients({
 			const a = ingredients?.filter(
 				(item) => item._id === e.currentTarget.dataset.id
 			);
-			setModalIsOpen(true);
+			openModal();
 			setIngredient(a[0]);
 		},
 		[ingredients]
@@ -64,12 +65,12 @@ export default function BurgerIngredients({
 
 	return (
 		<section className={styles.container}>
-			<Modal
-				header='Детали ингредиента'
-				isOpen={modalIsOpen}
-				setIsOpen={setModalIsOpen}>
-				<IngredientDetails ingredient={ingredient!} />
-			</Modal>
+			{modalIsOpen && (
+				<Modal header='Детали ингредиента' closeModal={closeModal}>
+					<IngredientDetails ingredient={ingredient!} />
+				</Modal>
+			)}
+
 			<div className='pt-10'>
 				<p className='text text_type_main-large mb-5'>Соберите бургер</p>
 				{tabs}

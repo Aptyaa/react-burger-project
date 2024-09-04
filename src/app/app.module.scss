@@ -1,14 +1,11 @@
 .page {
 	height: calc(100vh - 72px);
-	// max-width: 1240px;
 	display: flex;
 	justify-content: center;
-	// align-items: center;
 	box-sizing: border-box;
-}
-::-webkit-scrollbar {
-	width: 6px;
-}
-::-webkit-scrollbar-track {
-	background: blue;
+
+	.container {
+		display: flex;
+		gap: 40px;
+	}
 }

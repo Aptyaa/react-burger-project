@@ -7,54 +7,45 @@ import styles from './modal.module.scss';
 interface PropModal {
 	header?: string;
 	children: ReactNode;
-	isOpen: boolean;
-	setIsOpen: (ar: boolean) => void;
+	closeModal: () => void;
 }
 
 const portal = document.getElementById('portal') as HTMLElement;
 
-export default function Modal({
-	header,
-	children,
-	isOpen,
-	setIsOpen,
-}: PropModal) {
+export default function Modal({ header, children, closeModal }: PropModal) {
 	const modal = useRef<HTMLDivElement | null>(null);
 
 	const handleClick = () => {
-		setIsOpen(false);
+		closeModal();
 	};
 
 	const handleClickOutSide = (e: React.MouseEvent) => {
-		if (isOpen && modal.current && !modal.current.contains(e.target as Node)) {
-			setIsOpen(false);
+		if (modal.current && !modal.current.contains(e.target as Node)) {
+			closeModal();
 		}
 	};
 
-	const handlePress = (e: KeyboardEvent) => {
-		if (e.key === 'Escape') setIsOpen(false);
-	};
-
 	useEffect(() => {
-		if (isOpen) document.addEventListener('keydown', handlePress);
-		return () => document.removeEventListener('keydown', handlePress);
-	}, [isOpen]);
+		const handlePress = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') closeModal();
+		};
 
-	return (
-		isOpen &&
-		createPortal(
-			<ModalOverlay onClick={handleClickOutSide}>
-				<div
-					ref={modal}
-					className={`${styles.modal} text pt-10 pl-10 pr-10 pb-15`}>
-					{header && <p className='text text_type_main-large'>{header}</p>}
-					<span className={styles.close}>
-						<CloseIcon onClick={handleClick} type='primary' />
-					</span>
-					{children}
-				</div>
-			</ModalOverlay>,
-			portal
-		)
+		document.addEventListener('keydown', handlePress);
+		return () => document.removeEventListener('keydown', handlePress);
+	}, []);
+
+	return createPortal(
+		<ModalOverlay onClick={handleClickOutSide}>
+			<div
+				ref={modal}
+				className={`${styles.modal} text pt-10 pl-10 pr-10 pb-15`}>
+				{header && <p className='text text_type_main-large'>{header}</p>}
+				<span className={styles.close}>
+					<CloseIcon onClick={handleClick} type='primary' />
+				</span>
+				{children}
+			</div>
+		</ModalOverlay>,
+		portal
 	);
 }

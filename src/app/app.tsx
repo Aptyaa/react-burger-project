@@ -30,9 +30,11 @@ export const App = () => {
 				if (res.ok) {
 					const { data } = await res.json();
 					setState({ ingredients: data, isLoading: false, error: false });
+					return;
 				}
-			} catch {
-				console.log('Something wrong ...');
+				throw new Error(`Ошибка: ${res.status}`);
+			} catch (e) {
+				console.error(e);
 				setState({ ...state, isLoading: false, error: true });
 			}
 		})();
@@ -42,11 +44,9 @@ export const App = () => {
 		<>
 			<AppHeader />
 			<main className={styles.page}>
-				<div style={{ display: 'flex', gap: '40px' }}>
+				<div className={styles.container}>
 					<BurgerIngredients ingredients={state.ingredients} />
 					<BurgerConstructor ingredients={state.ingredients} />
-					{/* <PopupItemBurger /> */}
-					{/* <ModalOverlay /> */}
 				</div>
 			</main>
 		</>

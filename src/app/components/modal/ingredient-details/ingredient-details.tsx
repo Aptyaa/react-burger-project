@@ -14,7 +14,7 @@ export default function IngredientDetails({
 			<img
 				className={`${styles.image} mb-4 pl-5 pr-5`}
 				src={ingredient.image_large}
-				alt='Фото ингредиента'
+				alt={ingredient.name}
 			/>
 			<span className='mb-8 text text_type_main-medium'>{ingredient.name}</span>
 			<div

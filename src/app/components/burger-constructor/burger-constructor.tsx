@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import {
 	Button,
 	CurrencyIcon,
@@ -8,22 +8,26 @@ import styles from './burger-constructor.module.scss';
 import OrderDetails from '../modal/order-details/order-details';
 import Modal from '../modal/modal';
 import CreateListIngredients from './create-list-ingredients/create-list-ingredients';
+import { useModal } from '../hooks/useModal';
 
 interface IBurgerConstructor {
 	ingredients: IngredientsProp[];
 }
 
 function BurgerConstructor({ ingredients }: IBurgerConstructor) {
-	const [modalIsOpen, setModalIsOpen] = useState(false);
+	const { modalIsOpen, closeModal, openModal } = useModal();
 
 	const handleClick = useCallback(() => {
-		setModalIsOpen(true);
+		openModal();
 	}, []);
 	return (
 		<section className={`${styles.container} mt-25 pb-13`}>
-			<Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
-				<OrderDetails />
-			</Modal>
+			{modalIsOpen && (
+				<Modal closeModal={closeModal}>
+					<OrderDetails />
+				</Modal>
+			)}
+
 			{ingredients.length > 0 && (
 				<CreateListIngredients ingredients={ingredients} />
 			)}

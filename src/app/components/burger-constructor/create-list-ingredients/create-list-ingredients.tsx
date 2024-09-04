@@ -13,7 +13,7 @@ interface CreateListProp {
 function CreateListIngredients({ ingredients }: CreateListProp) {
 	return (
 		<div>
-			<span style={{ listStyleType: 'none' }}>
+			<span>
 				<ConstructorElement
 					extraClass='mr-2 ml-8 mb-4'
 					type={'top'}
@@ -26,7 +26,7 @@ function CreateListIngredients({ ingredients }: CreateListProp) {
 			<ul className={`${styles.list}`}>
 				{ingredients.map((item) => {
 					return (
-						<li style={{ listStyleType: 'none' }} key={item._id}>
+						<li key={item._id}>
 							<DragIcon type='primary' />
 							<ConstructorElement
 								extraClass='mr-2 ml-2 mb-4'
@@ -40,7 +40,7 @@ function CreateListIngredients({ ingredients }: CreateListProp) {
 					);
 				})}
 			</ul>
-			<span style={{ listStyleType: 'none' }}>
+			<span>
 				<ConstructorElement
 					extraClass='mr-2 ml-8 mb-4'
 					type={'bottom'}
