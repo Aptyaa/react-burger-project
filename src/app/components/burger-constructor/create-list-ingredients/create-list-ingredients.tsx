@@ -24,19 +24,21 @@ function CreateListIngredients({ ingredients }: CreateListProp) {
 				/>
 			</span>
 			<ul className={`${styles.list}`}>
-				{ingredients.map((item) => {
+				{ingredients.map((item, idx) => {
 					return (
-						<li key={item._id}>
-							<DragIcon type='primary' />
-							<ConstructorElement
-								extraClass='mr-2 ml-2 mb-4'
-								type={undefined}
-								isLocked={false}
-								text={item.name}
-								price={item.price}
-								thumbnail={item.image}
-							/>
-						</li>
+						idx !== 0 && (
+							<li key={item._id}>
+								<DragIcon type='primary' />
+								<ConstructorElement
+									extraClass='mr-2 ml-2 mb-4'
+									type={undefined}
+									isLocked={false}
+									text={item.name}
+									price={item.price}
+									thumbnail={item.image}
+								/>
+							</li>
+						)
 					);
 				})}
 			</ul>
