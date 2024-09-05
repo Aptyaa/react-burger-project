@@ -1,0 +1,24 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	.image {
+		max-width: 520px;
+		height: auto;
+	}
+
+	.nutrition_wrapper {
+		color: var(--text-inactive-color);
+		width: 100%;
+		padding: 0 60px;
+		display: flex;
+		justify-content: space-between;
+
+		> span {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+	}
+}

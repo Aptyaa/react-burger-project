@@ -1,0 +1,23 @@
+.container {
+	text-align: center;
+
+	.approve_order {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		background-image: url('../../../assets/pictures/aprove-order.svg');
+		background-size: cover;
+		background-position: center;
+		width: 100px;
+		height: 100px;
+
+		svg {
+			height: 40px;
+			width: 40px;
+		}
+	}
+
+	.addition_text {
+		color: var(--text-inactive-color);
+	}
+}

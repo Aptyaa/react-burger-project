@@ -1,0 +1,28 @@
+.header {
+	background-color: var(--background);
+}
+
+.navigation {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	position: relative;
+	max-width: 1240px;
+	margin: 0 auto;
+
+	.nav_container {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.logo {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+
+		svg {
+			max-width: 100%;
+			height: auto;
+		}
+	}
+}

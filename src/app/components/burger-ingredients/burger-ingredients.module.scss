@@ -1,0 +1,20 @@
+.container {
+	max-width: 600px;
+}
+
+.wrapper_ingredients {
+	composes: custom-scroll from global;
+	padding: 0 4px;
+	overflow-y: scroll;
+	height: 70%;
+}
+
+.box_item {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+.tab_ingredients {
+	display: flex;
+}
