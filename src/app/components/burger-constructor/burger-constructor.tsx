@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import {
 	Button,
 	CurrencyIcon,
@@ -17,9 +16,6 @@ interface IBurgerConstructor {
 function BurgerConstructor({ ingredients }: IBurgerConstructor) {
 	const { modalIsOpen, closeModal, openModal } = useModal();
 
-	const handleClick = useCallback(() => {
-		openModal();
-	}, []);
 	return (
 		<section className={`${styles.container} mt-25 pb-13`}>
 			{modalIsOpen && (
@@ -37,7 +33,7 @@ function BurgerConstructor({ ingredients }: IBurgerConstructor) {
 					<CurrencyIcon type='primary' className='ml-3' />
 				</span>
 				<Button
-					onClick={handleClick}
+					onClick={openModal}
 					type='primary'
 					size='medium'
 					htmlType='button'>
