@@ -48,7 +48,7 @@ function BurgerConstructor() {
 				</span>
 				<Button
 					onClick={handleClick}
-					disabled={order.length === 0}
+					disabled={order.length === 0 || bunToOrder.length === 0}
 					type={'primary'}
 					size='medium'
 					htmlType='button'>
