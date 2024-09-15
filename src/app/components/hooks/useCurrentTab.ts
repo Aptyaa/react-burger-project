@@ -35,6 +35,5 @@ export const useCurrentTab = () => {
 		refMain,
 		onScroll,
 		currentTab,
-		setCurrentTab,
 	};
 };

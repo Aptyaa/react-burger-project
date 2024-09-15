@@ -22,15 +22,8 @@ function BurgerIngredients() {
 		error,
 	} = useGetIngredientsQuery();
 	const dispatch = useAppDispatch();
-	const {
-		currentTab,
-		setCurrentTab,
-		onScroll,
-		refBun,
-		refMain,
-		refSauces,
-		rootRef,
-	} = useCurrentTab();
+	const { currentTab, onScroll, refBun, refMain, refSauces, rootRef } =
+		useCurrentTab();
 
 	const handleOpenModal = useCallback(
 		(e: React.MouseEvent<HTMLElement>) => {
@@ -49,16 +42,34 @@ function BurgerIngredients() {
 
 	const tabs = (
 		<div className={`${styles.tab_ingredients}`}>
-			<Tab value='buns' active={currentTab === 'buns'} onClick={setCurrentTab}>
+			<Tab
+				value='buns'
+				active={currentTab === 'buns'}
+				onClick={() =>
+					(refBun.current as unknown as Element).scrollIntoView({
+						behavior: 'smooth',
+					})
+				}>
 				Булки
 			</Tab>
 			<Tab
 				value='sauces'
 				active={currentTab === 'sauces'}
-				onClick={setCurrentTab}>
+				onClick={() =>
+					(refSauces.current as unknown as Element).scrollIntoView({
+						behavior: 'smooth',
+					})
+				}>
 				Соусы
 			</Tab>
-			<Tab value='main' active={currentTab === 'main'} onClick={setCurrentTab}>
+			<Tab
+				value='main'
+				active={currentTab === 'main'}
+				onClick={() =>
+					(refMain.current as unknown as Element).scrollIntoView({
+						behavior: 'smooth',
+					})
+				}>
 				Начинки
 			</Tab>
 		</div>
