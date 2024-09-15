@@ -1,11 +1,19 @@
 import styles from './order-details.module.scss';
 import { CheckMarkIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
-export default function OrderDetails() {
+interface OrderDetailsProp {
+	name?: string;
+	order: {
+		number: number;
+	};
+	success?: boolean;
+}
+
+export default function OrderDetails({ name, order }: OrderDetailsProp) {
 	return (
 		<div className={styles.container}>
-			<p className='mt-20 mb-8  text text_type_digits-large'>{'034536'}</p>
-			<p className='mb-15 text text_type_main-medium'>идентификатор заказа</p>
+			<p className='mt-20 mb-8  text text_type_digits-large'>{order.number}</p>
+			<p className='mb-15 text text_type_main-medium'>{name}</p>
 			<span className={styles.approve_order}>
 				<CheckMarkIcon type='primary' />
 			</span>

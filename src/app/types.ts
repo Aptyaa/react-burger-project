@@ -30,7 +30,7 @@ export interface IOrderConfirmResponse {
 }
 
 export const isFetchBaseQueryErrorType = (
-	error: any
+	error: unknown
 ): error is FetchBaseQueryError =>
 	(error as FetchBaseQueryError).status !== undefined;
 

@@ -1,73 +1,79 @@
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import BurgerIngredientsItem from './burger-ingredients-item/burger-ingredients-item';
-import styles from './burger-ingredients.module.scss';
-import { IngredientsProp } from './../../const';
+import { isFetchBaseQueryErrorType } from '../../types';
 import Modal from '../modal/modal';
 import IngredientDetails from '../modal/ingredient-details/ingredient-details';
 import { useModal } from '../hooks/useModal';
+import { useGetIngredientsQuery } from '../../services/app-api';
+import { useAppDispatch } from '../../services/hooks';
+import {
+	addToPreview,
+	deleteFromPreview,
+} from '../../services/slices/ingredient-slice';
+import { IngredientsBlock } from './ingredientss-block/ingredients-block';
+import { useCurrentTab } from '../hooks/useCurrentTab';
+import styles from './burger-ingredients.module.scss';
 
-interface BurgerIngredientsProp {
-	ingredients: IngredientsProp[];
-}
-
-export default function BurgerIngredients({
-	ingredients,
-}: BurgerIngredientsProp) {
-	const [current, setCurrent] = useState('buns');
-	const [ingredient, setIngredient] = useState<IngredientsProp | null>(null);
+function BurgerIngredients() {
 	const { modalIsOpen, openModal, closeModal } = useModal();
+	const {
+		data: fetchedIngredients,
+		isLoading,
+		error,
+	} = useGetIngredientsQuery();
+	const dispatch = useAppDispatch();
+	const {
+		currentTab,
+		setCurrentTab,
+		onScroll,
+		refBun,
+		refMain,
+		refSauces,
+		rootRef,
+	} = useCurrentTab();
 
-	const sortByTypeIngredients = (ingredients: IngredientsProp[]) => {
-		const buns: IngredientsProp[] = [];
-		const sauces: IngredientsProp[] = [];
-		const main: IngredientsProp[] = [];
-		ingredients.forEach((item) => {
-			item.type === 'bun'
-				? buns.push(item)
-				: item.type === 'sauce'
-				? sauces.push(item)
-				: main.push(item);
-		});
-		return [
-			['Булки', buns],
-			['Соусы', sauces],
-			['Начинки', main],
-		];
-	};
-
-	const sortedIngredients = sortByTypeIngredients(ingredients);
-
-	const handleClick = useCallback(
+	const handleOpenModal = useCallback(
 		(e: React.MouseEvent<HTMLElement>) => {
-			const a = ingredients?.filter(
+			const ingredient = fetchedIngredients!.data.find(
 				(item) => item._id === e.currentTarget.dataset.id
 			);
+			ingredient && dispatch(addToPreview(ingredient));
 			openModal();
-			setIngredient(a[0]);
 		},
-		[ingredients]
+		[fetchedIngredients]
 	);
+	const handleCloseModal = useCallback(() => {
+		dispatch(deleteFromPreview());
+		closeModal();
+	}, []);
 
 	const tabs = (
 		<div className={`${styles.tab_ingredients}`}>
-			<Tab value='buns' active={current === 'Булки'} onClick={setCurrent}>
+			<Tab value='buns' active={currentTab === 'buns'} onClick={setCurrentTab}>
 				Булки
 			</Tab>
-			<Tab value='sauces' active={current === 'sauces'} onClick={setCurrent}>
+			<Tab
+				value='sauces'
+				active={currentTab === 'sauces'}
+				onClick={setCurrentTab}>
 				Соусы
 			</Tab>
-			<Tab value='main' active={current === 'main'} onClick={setCurrent}>
+			<Tab value='main' active={currentTab === 'main'} onClick={setCurrentTab}>
 				Начинки
 			</Tab>
 		</div>
 	);
 
+	if (isLoading) return <h1>Загрузка ингредиентов ...</h1>;
+	if (error && isFetchBaseQueryErrorType(error)) {
+		return <h1>Ошибка загрузки: {error.status}</h1>;
+	} else if (error) return <h1>Ошибка загрузки: {error.message}</h1>;
+
 	return (
 		<section className={styles.container}>
 			{modalIsOpen && (
-				<Modal header='Детали ингредиента' closeModal={closeModal}>
-					<IngredientDetails ingredient={ingredient!} />
+				<Modal header='Детали ингредиента' closeModal={handleCloseModal}>
+					<IngredientDetails />
 				</Modal>
 			)}
 
@@ -75,32 +81,37 @@ export default function BurgerIngredients({
 				<p className='text text_type_main-large mb-5'>Соберите бургер</p>
 				{tabs}
 			</div>
-			<div className={styles.wrapper_ingredients}>
-				{sortedIngredients.length > 0 &&
-					sortedIngredients.map((item, index) => {
-						return (
-							<div key={index}>
-								<p className='mt-10 mb-6 text text_type_main-medium'>
-									{item[0] as string}
-								</p>
-								<div className={styles.box_item}>
-									{(item[1] as IngredientsProp[]).map((ingredient) => {
-										return (
-											<BurgerIngredientsItem
-												id={ingredient._id}
-												onClick={handleClick}
-												key={ingredient._id}
-												name={ingredient.name}
-												img={ingredient.image}
-												price={ingredient.price}
-											/>
-										);
-									})}
-								</div>
-							</div>
-						);
-					})}
-			</div>
+
+			{fetchedIngredients && (
+				<div
+					ref={rootRef}
+					onScroll={onScroll}
+					className={styles.wrapper_ingredients}>
+					<IngredientsBlock
+						name='bun'
+						ref={refBun}
+						handleOpenModal={handleOpenModal}
+						ingredients={fetchedIngredients?.ingredients.buns}>
+						Булки
+					</IngredientsBlock>
+					<IngredientsBlock
+						name='sauces'
+						ref={refSauces}
+						handleOpenModal={handleOpenModal}
+						ingredients={fetchedIngredients?.ingredients.sauces}>
+						Соусы
+					</IngredientsBlock>
+					<IngredientsBlock
+						name='main'
+						ref={refMain}
+						handleOpenModal={handleOpenModal}
+						ingredients={fetchedIngredients?.ingredients.main}>
+						Начинки
+					</IngredientsBlock>
+				</div>
+			)}
 		</section>
 	);
 }
+
+export default memo(BurgerIngredients);

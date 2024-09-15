@@ -3,16 +3,9 @@
 }
 
 .wrapper_ingredients {
-	composes: custom-scroll from global;
+	height: 70%;
 	padding: 0 4px;
 	overflow-y: scroll;
-	height: 70%;
-}
-
-.box_item {
-	display: flex;
-	justify-content: space-between;
-	flex-wrap: wrap;
 }
 
 .tab_ingredients {
