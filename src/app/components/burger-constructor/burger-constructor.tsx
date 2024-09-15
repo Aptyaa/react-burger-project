@@ -2,39 +2,54 @@ import {
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { IngredientsProp } from '../../const';
 import styles from './burger-constructor.module.scss';
 import OrderDetails from '../modal/order-details/order-details';
 import Modal from '../modal/modal';
 import CreateListIngredients from './create-list-ingredients/create-list-ingredients';
 import { useModal } from '../hooks/useModal';
+import { useConfirmOrderMutation } from '../../services/app-api';
+import { useAppSelector } from '../../services/hooks';
 
-interface IBurgerConstructor {
-	ingredients: IngredientsProp[];
-}
-
-function BurgerConstructor({ ingredients }: IBurgerConstructor) {
+function BurgerConstructor() {
 	const { modalIsOpen, closeModal, openModal } = useModal();
+	const [confirmOrder, { data: orderData, error }] = useConfirmOrderMutation();
+
+	const ingredientsToOrder = useAppSelector(
+		(store) => store.burger.toOrder.ingredients
+	);
+	const bunToOrder = useAppSelector((store) => store.burger.toOrder.bun);
+	const totalPrice = useAppSelector((store) => store.burger.totalPrice);
+	const order = [...bunToOrder, ...ingredientsToOrder, ...bunToOrder];
+
+	const handleClick = async () => {
+		await confirmOrder(order);
+		openModal();
+	};
 
 	return (
 		<section className={`${styles.container} mt-25 pb-13`}>
 			{modalIsOpen && (
 				<Modal closeModal={closeModal}>
-					<OrderDetails />
+					{orderData ? (
+						<OrderDetails {...orderData} />
+					) : (
+						<>
+							Ошибка при составлении заказа...
+							{JSON.stringify(error)}
+						</>
+					)}
 				</Modal>
 			)}
-
-			{ingredients.length > 0 && (
-				<CreateListIngredients ingredients={ingredients} />
-			)}
+			<CreateListIngredients />
 			<div className={styles.order_block}>
 				<span className={`${styles.total_price}`}>
-					500
+					{totalPrice}
 					<CurrencyIcon type='primary' className='ml-3' />
 				</span>
 				<Button
-					onClick={openModal}
-					type='primary'
+					onClick={handleClick}
+					disabled={order.length === 0}
+					type={'primary'}
 					size='medium'
 					htmlType='button'>
 					Оформить заказ

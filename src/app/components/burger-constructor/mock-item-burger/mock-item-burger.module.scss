@@ -1,0 +1,22 @@
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 536px;
+	height: 80px;
+	margin: 0 8px 16px;
+	padding: 16px 24px;
+	background-color: var(--background-element);
+}
+
+.top {
+	border-radius: var(--top-constructor-item-border-radius);
+}
+
+.bottom {
+	border-radius: var(--bottom-constructor-item-border-radius);
+}
+
+.center {
+	border-radius: var(--common-border-radius);
+}
