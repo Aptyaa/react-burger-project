@@ -1,57 +1,69 @@
+import { memo } from 'react';
+import MockItemBurger from '../mock-item-burger/mock-item-burger';
+import { useDrop } from 'react-dnd';
+import { useAppDispatch, useAppSelector } from '../../../services/hooks';
 import {
-	ConstructorElement,
-	DragIcon,
-} from '@ya.praktikum/react-developer-burger-ui-components';
-import React, { memo } from 'react';
-import { IngredientsProp } from '../../../const';
-import styles from './create-list-ingredients.module.scss';
+	addIngredient,
+	deleteIngredient,
+} from '../../../services/slices/burger-slice';
+import { useGetIngredientsQuery } from '../../../services/app-api';
+import BurgerConstructorElement from '../burger-constructor-element.tsx/burger-constructor-element';
+import { IDropItemIngredient } from '../../../types';
+import { IngredientsList } from './ingredients-list/ingrediest-list';
 
-interface CreateListProp {
-	ingredients: IngredientsProp[];
-}
+function CreateListIngredients() {
+	const dispatch = useAppDispatch();
+	const { bun, saucesAndMain } = useAppSelector(
+		(store) => store.burger.ingredients
+	);
+	const { data: ingredientsFetched } = useGetIngredientsQuery();
 
-function CreateListIngredients({ ingredients }: CreateListProp) {
+	const findIngredientById = (id: string) => {
+		return ingredientsFetched?.data.find((item) => item._id === id);
+	};
+	const [, dropTargetIngredients] = useDrop({
+		accept: ['sauce', 'main'],
+		drop(item: IDropItemIngredient) {
+			dispatch(addIngredient(findIngredientById(item.id)));
+		},
+	});
+	const [, dropTargetBun] = useDrop({
+		accept: 'bun',
+
+		drop(item: IDropItemIngredient) {
+			if (bun[0]) {
+				dispatch(deleteIngredient(bun[0]));
+			}
+			dispatch(addIngredient(findIngredientById(item.id)));
+		},
+	});
+
+	const renderBun = (position: 'top' | 'bottom') => {
+		return bun.length === 0 ? (
+			<MockItemBurger
+				dropTarget={position === 'top' ? dropTargetBun : undefined}
+				position={position}>
+				Выберите булку
+			</MockItemBurger>
+		) : (
+			<span ref={position === 'top' ? dropTargetBun : undefined}>
+				<BurgerConstructorElement
+					isLocked={true}
+					position={position}
+					item={bun[0]}
+				/>
+			</span>
+		);
+	};
+
 	return (
 		<div>
-			<span>
-				<ConstructorElement
-					extraClass='mr-2 ml-8 mb-4'
-					type={'top'}
-					isLocked={true}
-					text={`${ingredients[0]['name']} (верх)`}
-					price={ingredients[0].price}
-					thumbnail={ingredients[0].image}
-				/>
-			</span>
-			<ul className={`${styles.list}`}>
-				{ingredients.map((item, idx) => {
-					return (
-						idx !== 0 && (
-							<li key={item._id}>
-								<DragIcon type='primary' />
-								<ConstructorElement
-									extraClass='mr-2 ml-2 mb-4'
-									type={undefined}
-									isLocked={false}
-									text={item.name}
-									price={item.price}
-									thumbnail={item.image}
-								/>
-							</li>
-						)
-					);
-				})}
-			</ul>
-			<span>
-				<ConstructorElement
-					extraClass='mr-2 ml-8 mb-4'
-					type={'bottom'}
-					isLocked={true}
-					text={`${ingredients[0].name} (низ)`}
-					price={ingredients[0].price}
-					thumbnail={ingredients[0].image}
-				/>
-			</span>
+			{renderBun('top')}
+			<IngredientsList
+				saucesAndMain={saucesAndMain}
+				ref={dropTargetIngredients}
+			/>
+			{renderBun('bottom')}
 		</div>
 	);
 }
