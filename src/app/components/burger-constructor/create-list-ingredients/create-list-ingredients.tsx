@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import MockItemBurger from '../mock-item-burger/mock-item-burger';
 import { useDrop } from 'react-dnd';
-import styles from './create-list-ingredients.module.scss';
 import { useAppDispatch, useAppSelector } from '../../../services/hooks';
 import {
 	addIngredient,
@@ -9,8 +8,8 @@ import {
 } from '../../../services/slices/burger-slice';
 import { useGetIngredientsQuery } from '../../../services/app-api';
 import BurgerConstructorElement from '../burger-constructor-element.tsx/burger-constructor-element';
-import clsx from 'clsx';
 import { IDropItemIngredient } from '../../../types';
+import { IngredientsList } from './ingredients-list/ingrediest-list';
 
 function CreateListIngredients() {
 	const dispatch = useAppDispatch();
@@ -57,28 +56,13 @@ function CreateListIngredients() {
 		);
 	};
 
-	const renderIngredients = () => {
-		{
-			return saucesAndMain.length === 0 ? (
-				<MockItemBurger position='center'>Выберите начинку</MockItemBurger>
-			) : (
-				<ul className={clsx(styles.list)}>
-					{saucesAndMain.map((item, index) => {
-						return (
-							<li key={item.key}>
-								<BurgerConstructorElement item={item} index={index} />
-							</li>
-						);
-					})}
-				</ul>
-			);
-		}
-	};
-
 	return (
 		<div>
 			{renderBun('top')}
-			<div ref={dropTargetIngredients}>{renderIngredients()}</div>
+			<IngredientsList
+				saucesAndMain={saucesAndMain}
+				ref={dropTargetIngredients}
+			/>
 			{renderBun('bottom')}
 		</div>
 	);

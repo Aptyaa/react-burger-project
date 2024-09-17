@@ -36,11 +36,6 @@ export const appApi = createApi({
 				});
 				return {
 					ingredients: { buns, sauces, main },
-					// [
-					// 	['Булки', buns],
-					// 	['Соусы', sauces],
-					// 	['Начинки', main],
-					// ],
 					data: response.data,
 				};
 			},
