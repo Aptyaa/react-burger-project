@@ -22,7 +22,8 @@ function BurgerIngredients() {
 		error,
 	} = useGetIngredientsQuery();
 	const dispatch = useAppDispatch();
-	const { onScroll, refBun, refMain, refSauces, rootRef } = useCurrentTab();
+	const { onScroll, refBun, refMain, refSauces, rootRef, currentTab } =
+		useCurrentTab();
 
 	const handleOpenModal = useCallback(
 		(e: React.MouseEvent<HTMLElement>) => {
@@ -55,7 +56,12 @@ function BurgerIngredients() {
 
 			<div className='pt-10'>
 				<p className='text text_type_main-large mb-5'>Соберите бургер</p>
-				<Tabs />
+				<Tabs
+					currentTab={currentTab}
+					refBun={refBun}
+					refMain={refMain}
+					refSauces={refSauces}
+				/>
 			</div>
 
 			{fetchedIngredients && (
