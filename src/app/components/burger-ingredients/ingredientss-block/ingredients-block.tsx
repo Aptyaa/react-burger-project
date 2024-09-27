@@ -7,13 +7,12 @@ interface IngredientsBlockProps {
 	children: string;
 	ingredients: IngredientsProp[];
 	name: string;
-	handleOpenModal: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 export const IngredientsBlock = memo(
 	forwardRef(
 		(
-			{ children, ingredients, name, handleOpenModal }: IngredientsBlockProps,
+			{ children, ingredients, name }: IngredientsBlockProps,
 			ref: LegacyRef<HTMLDivElement>
 		) => {
 			return (
@@ -25,7 +24,6 @@ export const IngredientsBlock = memo(
 								return (
 									<BurgerIngredientsItem
 										id={ingredient._id}
-										onClick={handleOpenModal}
 										key={ingredient._id}
 										name={ingredient.name}
 										img={ingredient.image}

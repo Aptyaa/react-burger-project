@@ -24,6 +24,7 @@
 }
 
 .count {
+	composes: text text_type_digits-default from global;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -34,9 +35,13 @@
 	height: 32px;
 	background-color: var(--colors-interface-accent);
 	border-radius: 50%;
-	composes: text text_type_digits-default from global;
 }
 
 .isDrag {
 	opacity: 1;
+}
+
+.link {
+	color: var(--text-primary-color);
+	text-decoration: none;
 }

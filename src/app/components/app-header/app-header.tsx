@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import MenuItem from './menu-item/menu-item';
 import {
 	Logo,
@@ -7,52 +6,50 @@ import {
 	ProfileIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './app-header.module.scss';
+import { NavLink } from 'react-router-dom';
 
 export default function AppHeader() {
-	const [currentNav, setCurrentNav] = useState('constructor');
-
-	const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-		setCurrentNav(e.currentTarget.dataset.value as string);
-	};
-
 	return (
 		<header className={styles.header}>
 			<nav className={styles.navigation}>
 				<div className={styles.nav_container}>
-					<MenuItem
-						onClick={handleClick}
-						value='constructor'
-						icon={
-							<BurgerIcon
-								type={currentNav === 'constructor' ? 'primary' : 'secondary'}
-							/>
-						}>
-						Конструктор
-					</MenuItem>
-					<MenuItem
-						onClick={handleClick}
-						value='orders'
-						icon={
-							<ListIcon
-								type={currentNav === 'orders' ? 'primary' : 'secondary'}
-							/>
-						}>
-						Лента заказов
-					</MenuItem>
+					<NavLink
+						to='/'
+						className={({ isActive }) => (isActive ? styles.isActive : '')}>
+						{({ isActive }) => (
+							<MenuItem
+								value='constructor'
+								icon={<BurgerIcon type={isActive ? 'primary' : 'secondary'} />}>
+								Конструктор
+							</MenuItem>
+						)}
+					</NavLink>
+					<NavLink
+						to='/order-history'
+						className={({ isActive }) => (isActive ? styles.isActive : '')}>
+						{({ isActive }) => (
+							<MenuItem
+								value='orders'
+								icon={<ListIcon type={isActive ? 'primary' : 'secondary'} />}>
+								Лента заказов
+							</MenuItem>
+						)}
+					</NavLink>
 				</div>
 				<span className={styles.logo}>
 					<Logo />
 				</span>
-				<MenuItem
-					onClick={handleClick}
-					value='profile'
-					icon={
-						<ProfileIcon
-							type={currentNav === 'profile' ? 'primary' : 'secondary'}
-						/>
-					}>
-					Личный кабинет
-				</MenuItem>
+				<NavLink
+					to='/profile'
+					className={({ isActive }) => (isActive ? styles.isActive : '')}>
+					{({ isActive }) => (
+						<MenuItem
+							value='profile'
+							icon={<ProfileIcon type={isActive ? 'primary' : 'secondary'} />}>
+							Личный кабинет
+						</MenuItem>
+					)}
+				</NavLink>
 			</nav>
 		</header>
 	);

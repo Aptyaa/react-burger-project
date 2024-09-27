@@ -1,8 +1,18 @@
-import { useAppSelector } from '../../../services/hooks';
+import { useParams } from 'react-router-dom';
+import { useGetIngredientsQuery } from '../../../services/app-api';
+// import { useAppSelector } from '../../../services/hooks';
 import styles from './ingredient-details.module.scss';
 
 export default function IngredientDetails() {
-	const ingredient = useAppSelector((store) => store.ingredient.ingredient);
+	const { data } = useGetIngredientsQuery();
+	// const ingredientOpenWithModal = useAppSelector(
+	// 	(store) => store.ingredient.ingredient
+	// );
+	const { ingredientId } = useParams();
+
+	const ingredient = data?.data.find((item) => item._id === ingredientId);
+
+	// const ingredient = ingredientOpenWithModal || ingredientOpenWithUrl;
 
 	return (
 		ingredient && (

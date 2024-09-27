@@ -1,11 +1,6 @@
 .page {
-	height: calc(100vh - 72px);
 	display: flex;
 	justify-content: center;
 	box-sizing: border-box;
-
-	.container {
-		display: flex;
-		gap: 40px;
-	}
+	height: calc(100vh - 72px);
 }
