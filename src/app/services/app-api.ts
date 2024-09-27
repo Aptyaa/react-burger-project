@@ -4,7 +4,23 @@ import {
 	IOrderConfirmResponse,
 	IOrderConfirmRequest,
 	IngredientsProp,
+	IRegisterRequest,
+	IRegisterSuccessResponse,
+	IFetchedUser,
+	ILoginRequest,
+	IForgotAndResetPasswordResponse,
+	IForgotPasswordRequest,
+	IResetPasswordRequest,
+	IUpdateTokenSuccess,
+	IUpdateTokenRequest,
+	IUpdateUser,
 } from '../types';
+import { extractJWTToken, getCookie } from './utils';
+import {
+	BASE_URL,
+	updateTokenAndFetchUser,
+	updateTokenAndUpdateUser,
+} from './burgerApi';
 
 interface ITransformResponseIngredients {
 	ingredients: {
@@ -18,8 +34,9 @@ interface ITransformResponseIngredients {
 export const appApi = createApi({
 	reducerPath: 'appApi',
 	baseQuery: fetchBaseQuery({
-		baseUrl: 'https://norma.nomoreparties.space/api/',
+		baseUrl: BASE_URL,
 	}),
+	tagTypes: ['User'],
 	endpoints: (builder) => ({
 		getIngredients: builder.query<ITransformResponseIngredients, void>({
 			query: () => '/ingredients',
@@ -45,13 +62,115 @@ export const appApi = createApi({
 				query: (ingredients) => ({
 					url: '/orders',
 					method: 'POST',
+					headers: [['Authorization', `Bearer ${getCookie('accessToken')}`]],
 					body: {
 						ingredients,
 					},
 				}),
 			}
 		),
+		register: builder.mutation<IRegisterSuccessResponse, IRegisterRequest>({
+			query: (body) => ({
+				url: 'auth/register',
+				method: 'POST',
+				body,
+			}),
+			transformResponse: (data: IRegisterSuccessResponse) => {
+				localStorage.setItem('refreshToken', data.refreshToken);
+				document.cookie = `accessToken=${extractJWTToken(
+					data.accessToken
+				)}; max-age=1200`;
+				return data;
+			},
+		}),
+		login: builder.mutation<IRegisterSuccessResponse, ILoginRequest>({
+			query: (body) => ({
+				url: 'auth/login',
+				method: 'POST',
+				body,
+			}),
+			transformResponse: (data: IRegisterSuccessResponse) => {
+				localStorage.setItem('refreshToken', data.refreshToken);
+				document.cookie = `accessToken=${extractJWTToken(
+					data.accessToken
+				)}; max-age=1200`;
+				return data;
+			},
+		}),
+		logout: builder.mutation<IForgotAndResetPasswordResponse, void>({
+			query: () => ({
+				url: 'auth/logout',
+				method: 'POST',
+				body: { token: localStorage.getItem('refreshToken') },
+			}),
+			transformResponse: (data: IForgotAndResetPasswordResponse) => {
+				localStorage.removeItem('refreshToken');
+				document.cookie = 'accessToken=undefined; max-age=-1';
+				return data;
+			},
+		}),
+		getUser: builder.query<IFetchedUser, void>({
+			queryFn: async () => {
+				try {
+					const data = await updateTokenAndFetchUser();
+					return { data };
+				} catch (error) {
+					return { error: (error as Error).message } as any;
+				}
+			},
+			providesTags: ['User'],
+		}),
+		updateUser: builder.mutation<IFetchedUser, IUpdateUser>({
+			queryFn: async (data: IUpdateUser) => {
+				const result = await updateTokenAndUpdateUser(data);
+				return { data: result };
+			},
+			invalidatesTags: ['User'],
+		}),
+		forgotPassword: builder.mutation<
+			IForgotAndResetPasswordResponse,
+			IForgotPasswordRequest
+		>({
+			query: (body) => ({
+				url: 'password-reset',
+				method: 'POST',
+				body,
+			}),
+		}),
+		resetPassword: builder.mutation<
+			IForgotAndResetPasswordResponse,
+			IResetPasswordRequest
+		>({
+			query: (body) => ({
+				url: 'password-reset/reset',
+				method: 'POST',
+				body,
+			}),
+		}),
+		updateToken: builder.mutation<void, IUpdateTokenRequest>({
+			query: () => ({
+				url: 'auth/token',
+				method: 'POST',
+				body: localStorage.getItem('refreshToken'),
+			}),
+			transformResponse: (response: IUpdateTokenSuccess) => {
+				localStorage.setItem('refreshToken', response.refreshToken);
+				document.cookie = `accessToken=${extractJWTToken(
+					response.accessToken
+				)}; max-age=1200`;
+			},
+		}),
 	}),
 });
 
-export const { useGetIngredientsQuery, useConfirmOrderMutation } = appApi;
+export const {
+	useGetIngredientsQuery,
+	useConfirmOrderMutation,
+	useRegisterMutation,
+	useGetUserQuery,
+	useUpdateUserMutation,
+	useForgotPasswordMutation,
+	useResetPasswordMutation,
+	useLoginMutation,
+	useLogoutMutation,
+} = appApi;

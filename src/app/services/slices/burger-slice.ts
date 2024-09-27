@@ -85,9 +85,11 @@ export const burgerSlice = createSlice({
 				state.ingredients.saucesAndMain[action.payload.draggedIndex];
 			state.ingredients.saucesAndMain[action.payload.draggedIndex] = temp;
 		},
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		resetBurger: (state) => (state = initialState),
 	},
 });
 
 export const { reducer } = burgerSlice;
-export const { addIngredient, deleteIngredient, moveIngredient } =
+export const { addIngredient, deleteIngredient, moveIngredient, resetBurger } =
 	burgerSlice.actions;
