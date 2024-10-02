@@ -8,6 +8,8 @@ import Navigation from './navigation/navigation';
 import { useGetUserQuery, useUpdateUserMutation } from '../../services/app-api';
 import Loader from '../../components/loader/loader';
 import clsx from 'clsx';
+import { useForm } from '../../components/hooks/useForm';
+import { IUpdateUser } from '../../types';
 
 const initialDisabledState = {
 	name: true,
@@ -16,31 +18,35 @@ const initialDisabledState = {
 };
 
 export default function Profile() {
-	const [name, setName] = useState('');
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const { form, handleChange, setForm } = useForm({
+		name: '',
+		password: '',
+		email: '',
+	});
 	const [allow, setAllow] = useState(initialDisabledState);
 	const { data, isLoading } = useGetUserQuery();
-	const [updateUser, { data: updateUserData, isLoading: isLoadingUpdateUser }] =
+	const [updateUser, { isLoading: isLoadingUpdateUser }] =
 		useUpdateUserMutation();
-
 	useEffect(() => {
-		setName(data?.user.name || '');
-		setEmail(data?.user.email || '');
+		setForm({
+			...form,
+			name: data?.user.name || '',
+			email: data?.user.email || '',
+		});
 	}, [data]);
 
 	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
-		await updateUser({ name, email, password });
+		await updateUser(form as unknown as IUpdateUser);
 		setAllow(initialDisabledState);
-		setName(data?.user.name || '');
-		setEmail(data?.user.email || '');
+		setForm({ ...form, name: data?.user.name || '' });
+		setForm({ ...form, email: data?.user.email || '' });
 	};
 
 	const cancelUpdate = () => {
-		setName(updateUserData?.user.name || data?.user.name || '');
-		setEmail(updateUserData?.user.email || data?.user.email || '');
-		setPassword('');
+		setForm({ ...form, name: data?.user.name || '' });
+		setForm({ ...form, email: data?.user.email || '' });
+		setForm({ ...form, password: '' });
 	};
 
 	const allowUpdate = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -62,9 +68,9 @@ export default function Profile() {
 				<form onSubmit={handleSubmit}>
 					<Input
 						extraClass={clsx('mb-6', styles.inactive_input)}
-						value={name || ''}
+						value={form.name || ''}
 						placeholder='Имя'
-						onChange={(e) => setName(e.target.value)}
+						onChange={handleChange}
 						icon='EditIcon'
 						onIconClick={allowUpdate}
 						disabled={allow.name}
@@ -72,9 +78,9 @@ export default function Profile() {
 					/>
 					<Input
 						extraClass='mb-6'
-						value={email || ''}
+						value={form.email || ''}
 						placeholder='Email'
-						onChange={(e) => setEmail(e.target.value)}
+						onChange={handleChange}
 						icon='EditIcon'
 						onIconClick={allowUpdate}
 						disabled={allow.email}
@@ -82,13 +88,13 @@ export default function Profile() {
 					/>
 					<Input
 						extraClass='mb-6'
-						value={password || ''}
+						value={form.password || ''}
 						type='password'
 						placeholder='Пароль'
-						onChange={(e) => setPassword(e.target.value)}
+						onChange={handleChange}
 						icon='EditIcon'
 						onIconClick={allowUpdate}
-						disabled={true}
+						disabled={allow.password}
 						name='password'
 					/>
 					<div className={styles.button_wrapper}>

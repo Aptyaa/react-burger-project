@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
 	Button,
 	Input,
@@ -7,10 +7,11 @@ import styles from './login.module.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../../services/app-api';
 import Loader from '../../components/loader/loader';
+import { useForm } from '../../components/hooks/useForm';
+import { ILoginRequest } from '../../types';
 
 export default function Login() {
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const { form, handleChange } = useForm({ email: '', password: '' });
 	const [login, { data, isLoading }] = useLoginMutation();
 	const navigate = useNavigate();
 
@@ -20,7 +21,7 @@ export default function Login() {
 
 	const handleSubmit = (e: React.SyntheticEvent) => {
 		e.preventDefault();
-		login({ email, password });
+		login(form as unknown as ILoginRequest);
 	};
 
 	const showPassword = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -37,19 +38,21 @@ export default function Login() {
 			<form onSubmit={handleSubmit}>
 				<Input
 					placeholder='E-mail'
-					value={email || ''}
-					onChange={(e) => setEmail(e.target.value)}
+					value={form.email || ''}
+					onChange={handleChange}
 					extraClass='mb-6'
 					type='email'
+					name='email'
 				/>
 				<Input
 					placeholder='Пароль'
 					type='password'
-					value={password || ''}
-					onChange={(e) => setPassword(e.target.value)}
+					value={form.password || ''}
+					onChange={handleChange}
 					extraClass='mb-6'
 					icon='HideIcon'
 					onIconClick={showPassword}
+					name='password'
 				/>
 				<Button htmlType='submit' type='primary' extraClass='mb-20'>
 					Войти
