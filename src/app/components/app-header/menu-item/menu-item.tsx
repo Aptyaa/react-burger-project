@@ -5,7 +5,7 @@ interface MenuItemProps {
 	icon?: ReactNode;
 	children: string;
 	value: string;
-	onClick: (e: React.MouseEvent<HTMLElement>) => void;
+	onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 function MenuItem(props: MenuItemProps) {

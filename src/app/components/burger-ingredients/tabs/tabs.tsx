@@ -1,9 +1,15 @@
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './tabs.module.scss';
-import { useCurrentTab } from '../../hooks/useCurrentTab';
+import { memo } from 'react';
 
-function Tabs() {
-	const { currentTab, refBun, refSauces, refMain } = useCurrentTab();
+interface TabsProps {
+	currentTab: string;
+	refBun: React.RefObject<HTMLDivElement>;
+	refSauces: React.RefObject<HTMLDivElement>;
+	refMain: React.RefObject<HTMLDivElement>;
+}
+
+function Tabs({ currentTab, refBun, refSauces, refMain }: TabsProps) {
 	return (
 		<div>
 			<div className={`${styles.tab_ingredients}`}>
@@ -42,4 +48,4 @@ function Tabs() {
 	);
 }
 
-export default Tabs;
+export default memo(Tabs);

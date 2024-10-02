@@ -1,0 +1,29 @@
+.container {
+	position: absolute;
+	left: -360px;
+	display: flex;
+	flex-direction: column;
+	width: 320px;
+
+	a {
+		padding: 7px 0;
+		color: var(--text-inactive-color);
+		text-decoration: none;
+	}
+
+	.isActive {
+		color: var(--text-primary-color);
+	}
+
+	.button {
+		padding: 7px 0;
+		color: var(--text-inactive-color);
+		font-size: 24px;
+		text-align: left;
+	}
+
+	.description {
+		color: var(--text-inactive-color);
+		font-size: 16px;
+	}
+}

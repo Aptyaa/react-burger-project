@@ -7,12 +7,21 @@ import OrderDetails from '../modal/order-details/order-details';
 import Modal from '../modal/modal';
 import CreateListIngredients from './create-list-ingredients/create-list-ingredients';
 import { useModal } from '../hooks/useModal';
-import { useConfirmOrderMutation } from '../../services/app-api';
-import { useAppSelector } from '../../services/hooks';
+import {
+	useConfirmOrderMutation,
+	useGetUserQuery,
+} from '../../services/app-api';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
+import { useNavigate } from 'react-router-dom';
+import { resetBurger } from '../../services/slices/burger-slice';
 
 function BurgerConstructor() {
 	const { modalIsOpen, closeModal, openModal } = useModal();
-	const [confirmOrder, { data: orderData, error }] = useConfirmOrderMutation();
+	const [confirmOrder, { data: orderData, isLoading, error }] =
+		useConfirmOrderMutation();
+	const { data } = useGetUserQuery();
+	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
 
 	const ingredientsToOrder = useAppSelector(
 		(store) => store.burger.toOrder.ingredients
@@ -22,14 +31,19 @@ function BurgerConstructor() {
 	const order = [...bunToOrder, ...ingredientsToOrder, ...bunToOrder];
 
 	const handleClick = async () => {
-		await confirmOrder(order);
+		if (!data) {
+			navigate('/login');
+			return;
+		}
 		openModal();
+		await confirmOrder(order);
+		dispatch(resetBurger());
 	};
 
 	return (
 		<section className={`${styles.container} mt-25 pb-13`}>
 			{modalIsOpen && (
-				<Modal closeModal={closeModal}>
+				<Modal isLoading={isLoading} closeModal={closeModal}>
 					{orderData ? (
 						<OrderDetails {...orderData} />
 					) : (

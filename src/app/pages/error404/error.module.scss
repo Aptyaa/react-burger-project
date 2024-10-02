@@ -1,0 +1,15 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	a {
+		color: var(--colors-interface-accent);
+		text-decoration: none;
+	}
+}
+
+h1 {
+	font-size: 8rem;
+}
