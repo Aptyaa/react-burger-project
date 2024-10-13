@@ -75,11 +75,6 @@ export const burgerSlice = createSlice({
 			state,
 			action: PayloadAction<{ draggedIndex: number; targetIndex: number }>
 		) => {
-			if (
-				state.ingredients.saucesAndMain[action.payload.draggedIndex]._id ===
-				state.ingredients.saucesAndMain[action.payload.targetIndex]._id
-			)
-				return;
 			const temp = state.ingredients.saucesAndMain[action.payload.targetIndex];
 			state.ingredients.saucesAndMain[action.payload.targetIndex] =
 				state.ingredients.saucesAndMain[action.payload.draggedIndex];

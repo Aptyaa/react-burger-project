@@ -11,7 +11,7 @@ import {
 import { useDrag, useDrop } from 'react-dnd';
 import styles from './burger-constructor-element.module.scss';
 import { useAppDispatch, useAppSelector } from '../../../services/hooks';
-import { IDropItemConstructor } from '../../../types';
+import { IDragItemConstructor, IDragCollectedProps } from '../../../types';
 
 interface BurgerConstructorElementProp {
 	item: IngredientsPropWithKey;
@@ -24,13 +24,17 @@ function BurgerConstructorElement({
 	item,
 	position = undefined,
 	isLocked = false,
-	index,
+	index = 0,
 }: BurgerConstructorElementProp) {
 	const { key, name, image, price } = item;
 	const ingredients = useAppSelector((store) => store.burger.ingredients);
 	const dispatch = useAppDispatch();
-	const ref = useRef(null);
-	const [{ isDragging }, dragRef] = useDrag({
+	const ref = useRef<HTMLDivElement>(null);
+	const [{ isDragging }, dragRef] = useDrag<
+		IDragItemConstructor,
+		unknown,
+		IDragCollectedProps
+	>({
 		type: 'sortIngredients',
 		item: { index },
 		collect: (monitor) => ({
@@ -38,9 +42,9 @@ function BurgerConstructorElement({
 		}),
 	});
 
-	const [, dropRef] = useDrop({
+	const [, dropRef] = useDrop<IDragItemConstructor>({
 		accept: 'sortIngredients',
-		hover: (item: IDropItemConstructor, monitor) => {
+		hover: (item, monitor) => {
 			if (!ref.current) {
 				return;
 			}

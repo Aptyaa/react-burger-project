@@ -21,16 +21,16 @@ function CreateListIngredients() {
 	const findIngredientById = (id: string) => {
 		return ingredientsFetched?.data.find((item) => item._id === id);
 	};
-	const [, dropTargetIngredients] = useDrop({
+	const [, dropTargetIngredients] = useDrop<IDropItemIngredient>({
 		accept: ['sauce', 'main'],
-		drop(item: IDropItemIngredient) {
+		drop(item) {
 			dispatch(addIngredient(findIngredientById(item.id)));
 		},
 	});
-	const [, dropTargetBun] = useDrop({
+	const [, dropTargetBun] = useDrop<IDropItemIngredient>({
 		accept: 'bun',
 
-		drop(item: IDropItemIngredient) {
+		drop(item) {
 			if (bun[0]) {
 				dispatch(deleteIngredient(bun[0]));
 			}

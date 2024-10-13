@@ -3,7 +3,7 @@ import { extractJWTToken, getCookie } from './utils';
 
 export const BASE_URL = 'https://norma.nomoreparties.space/api/';
 
-export const updateToken = async () => {
+export const updateToken = async (): Promise<void> => {
 	try {
 		const response = await fetch(`${BASE_URL}auth/token`, {
 			method: 'POST',
@@ -14,19 +14,20 @@ export const updateToken = async () => {
 				token: localStorage.getItem('refreshToken'),
 			}),
 		});
-		if (response.ok) {
-			const data = await response.json();
-			localStorage.setItem('refreshToken', data.refreshToken);
-			document.cookie = `accessToken=${extractJWTToken(
-				data.accessToken
-			)}; max-age=1200`;
+		if (!response.ok) {
+			throw new Error('Failed update token');
 		}
+		const data = await response.json();
+		localStorage.setItem('refreshToken', data.refreshToken);
+		document.cookie = `accessToken=${extractJWTToken(
+			data.accessToken
+		)}; max-age=1200`;
 	} catch (error) {
 		throw new Error((error as Error).message);
 	}
 };
 
-export const fetchUser = async () => {
+export const fetchUser = async (): Promise<IFetchedUser> => {
 	try {
 		const response = await fetch(`${BASE_URL}auth/user`, {
 			method: 'GET',
@@ -44,7 +45,7 @@ export const fetchUser = async () => {
 		throw new Error((error as Error).message);
 	}
 };
-export const updateUser = async (data: IUpdateUser) => {
+export const updateUser = async (data: IUpdateUser): Promise<IFetchedUser> => {
 	try {
 		const response = await fetch(`${BASE_URL}auth/user`, {
 			method: 'PATCH',
@@ -62,7 +63,9 @@ export const updateUser = async (data: IUpdateUser) => {
 	}
 };
 
-export const updateTokenAndUpdateUser = async (data: IUpdateUser) => {
+export const updateTokenAndUpdateUser = async (
+	data: IUpdateUser
+): Promise<IFetchedUser> => {
 	if (getCookie('accessToken')) {
 		return await updateUser(data);
 	}
@@ -73,7 +76,7 @@ export const updateTokenAndUpdateUser = async (data: IUpdateUser) => {
 	throw new Error('No access token and no refresh token available');
 };
 
-export const updateTokenAndFetchUser = async () => {
+export const updateTokenAndFetchUser = async (): Promise<IFetchedUser> => {
 	if (getCookie('accessToken')) {
 		return await fetchUser();
 	}
