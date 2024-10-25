@@ -12,6 +12,7 @@
 		"isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */,
 		"esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
 		"strict": true /* Enable all strict type-checking options. */,
+		"noImplicitAny": true,
 		"skipLibCheck": true /* Skip type checking of declaration files. */,
 		"forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
 		"resolveJsonModule": true,
@@ -20,6 +21,7 @@
 		// "checkJs": true /* Report errors in .js files. Works in tandem with allowJs. */,
 		"plugins": [{ "name": "typescript-plugin-css-modules" }]
 	},
+
 	"outDir": "./dist/",
 	"include": ["src/**/*"]
 }

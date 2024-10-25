@@ -34,11 +34,15 @@ export const isFetchBaseQueryErrorType = (
 ): error is FetchBaseQueryError =>
 	(error as FetchBaseQueryError).status !== undefined;
 
-export interface IDropItemConstructor {
+export interface IDragItemConstructor {
 	index: number;
 }
 export interface IDropItemIngredient {
 	id: string;
+}
+
+export interface IDragCollectedProps {
+	isDragging: boolean;
 }
 
 export interface IUser {

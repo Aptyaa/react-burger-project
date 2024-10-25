@@ -115,15 +115,31 @@ export const appApi = createApi({
 					const data = await updateTokenAndFetchUser();
 					return { data };
 				} catch (error) {
-					return { error: (error as Error).message } as any;
+					return {
+						error: {
+							status: 500,
+							statusText: (error as Error).cause,
+							data: (error as Error).message,
+						},
+					};
 				}
 			},
 			providesTags: ['User'],
 		}),
 		updateUser: builder.mutation<IFetchedUser, IUpdateUser>({
 			queryFn: async (data: IUpdateUser) => {
-				const result = await updateTokenAndUpdateUser(data);
-				return { data: result };
+				try {
+					const result = await updateTokenAndUpdateUser(data);
+					return { data: result };
+				} catch (error) {
+					return {
+						error: {
+							status: 500,
+							statusText: (error as Error).cause,
+							data: (error as Error).message,
+						},
+					};
+				}
 			},
 			invalidatesTags: ['User'],
 		}),
