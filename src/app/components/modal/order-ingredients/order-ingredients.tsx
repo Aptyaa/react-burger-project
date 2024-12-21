@@ -49,7 +49,6 @@ export default function OrderIngredients() {
 		orderByNumber &&
 		number &&
 		countSameIngredientInOrder(orderByNumber?.[number]?.ingredients);
-	console.log(ingredientsFromEntries);
 
 	if (isLoading || loadingOnOrder) return <Loader />;
 

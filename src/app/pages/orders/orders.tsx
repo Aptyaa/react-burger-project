@@ -6,8 +6,6 @@ import Loader from '../../components/loader/loader';
 
 export default function Orders() {
 	const { data, isLoading } = useGetOrdersWSQuery();
-	console.log(isLoading);
-	console.log(data);
 	if (isLoading || !data?.success) return <Loader />;
 	return data ? (
 		<div className={'mt-10'}>

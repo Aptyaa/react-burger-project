@@ -26,7 +26,6 @@ export const App = () => {
 	const handleModalClose = () => {
 		navigate(-1);
 	};
-
 	return (
 		<>
 			<AppHeader />
@@ -81,11 +80,11 @@ export const App = () => {
 					<Route path='/profile' element={<OnlyAuth component={<Profile />} />}>
 						<Route index element={<Form />} />
 						<Route path='orders' element={<Feed variant='history_orders' />} />
-						<Route
-							path='orders/:number'
-							element={<OnlyAuth component={<OrderIngredients />} />}
-						/>
 					</Route>
+					<Route
+						path='profile/orders/:number'
+						element={<OnlyAuth component={<OrderIngredients />} />}
+					/>
 					<Route
 						path='/ingredients/:ingredientId'
 						element={<IngredientDetails />}
