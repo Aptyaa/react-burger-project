@@ -1,0 +1,42 @@
+/* stylelint-disable */
+.container {
+	max-width: 580px;
+	width: 100%;
+
+	.orders_wrapper {
+		display: flex;
+		gap: 34px;
+
+		.status {
+			div {
+				display: flex;
+				flex-direction: column;
+				flex-wrap: wrap;
+				height: 172px;
+				max-width: 272px;
+				overflow: hidden;
+				span {
+					margin-right: 15px;
+				}
+			}
+		}
+	}
+}
+
+.orders_inProgress,
+.orders_ready {
+	composes: mt-2 text text_type_digits-default from global;
+	font-family: Iceland;
+	max-width: 120px;
+	width: 100%;
+}
+
+.orders_ready {
+	color: var(--colors-interface-success);
+}
+
+.totalOrders {
+	composes: mt-15 from global;
+	font-family: Iceland;
+	font-size: 144px;
+}

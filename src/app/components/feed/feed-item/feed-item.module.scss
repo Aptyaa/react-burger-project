@@ -1,0 +1,40 @@
+/* stylelint-disable */
+.container {
+	width: 100%;
+	background-color: var(--background);
+	border-radius: 40px;
+
+	.order_number {
+		display: flex;
+		justify-content: space-between;
+		font-family: Iceland;
+	}
+}
+.link {
+	color: var(--text-primary-color);
+	text-decoration: none;
+}
+
+.time {
+	composes: text text_type_main-small from global;
+	color: var(--text-inactive-color);
+}
+
+.ingredients {
+	composes: text text_type_digits-default from global;
+}
+
+.status {
+	composes: text text_type_main-small from global;
+	margin-top: 15px;
+}
+
+.done {
+	color: var(--colors-interface-success);
+}
+.cancel {
+	color: var(--colors-interface-error);
+}
+.common {
+	color: var(--text-primary-color);
+}
