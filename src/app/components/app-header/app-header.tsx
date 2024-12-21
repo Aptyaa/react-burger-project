@@ -6,7 +6,7 @@ import {
 	ProfileIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './app-header.module.scss';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 
 export default function AppHeader() {
 	return (
@@ -25,7 +25,7 @@ export default function AppHeader() {
 						)}
 					</NavLink>
 					<NavLink
-						to='/order-history'
+						to='/feed'
 						className={({ isActive }) => (isActive ? styles.isActive : '')}>
 						{({ isActive }) => (
 							<MenuItem
@@ -36,9 +36,9 @@ export default function AppHeader() {
 						)}
 					</NavLink>
 				</div>
-				<span className={styles.logo}>
+				<Link to='/' className={styles.logo}>
 					<Logo />
-				</span>
+				</Link>
 				<NavLink
 					to='/profile'
 					className={({ isActive }) => (isActive ? styles.isActive : '')}>
