@@ -14,13 +14,17 @@ import {
 	IUpdateTokenSuccess,
 	IUpdateTokenRequest,
 	IUpdateUser,
+	IOrdersResponse,
 } from '../types';
 import { extractJWTToken, getCookie } from './utils';
 import {
 	BASE_URL,
+	updateToken,
 	updateTokenAndFetchUser,
 	updateTokenAndUpdateUser,
 } from './burgerApi';
+
+const WS_URL = 'wss://norma.nomoreparties.space/orders';
 
 interface ITransformResponseIngredients {
 	ingredients: {
@@ -29,17 +33,122 @@ interface ITransformResponseIngredients {
 		main: IngredientsProp[];
 	};
 	data: IngredientsProp[];
+	ingredientById: { [key: string]: IngredientsProp };
 }
 
 export const appApi = createApi({
 	reducerPath: 'appApi',
 	baseQuery: fetchBaseQuery({
-		baseUrl: BASE_URL,
+		baseUrl: '/',
 	}),
+	keepUnusedDataFor: 3,
 	tagTypes: ['User'],
 	endpoints: (builder) => ({
+		getOrderByNumber: builder.query<IOrdersResponse, number>({
+			query: (arg: number) => `${BASE_URL}/orders/${arg}`,
+		}),
+		getPersonalOrderWs: builder.query<IOrdersResponse, void>({
+			queryFn: () => ({
+				data: {
+					success: false,
+					orders: [],
+					total: 0,
+					totalToday: 0,
+					orderByNumber: {},
+				},
+			}),
+			onCacheEntryAdded: async (_, { updateCachedData, cacheEntryRemoved }) => {
+				let ws: WebSocket | null = null;
+				let shouldReconnect = true;
+
+				const connect = async () => {
+					ws = new WebSocket(
+						`${WS_URL}?token=${
+							getCookie('accessToken') || (await updateToken())
+						}`
+					);
+
+					ws.onmessage = async (event: MessageEvent) => {
+						const data: IOrdersResponse = JSON.parse(event.data);
+						if (!data.success)
+							throw new Error('some problems during fetching data in WS');
+						updateCachedData((draft) => {
+							draft.success = data.success;
+							draft.orders = [...data.orders].reverse();
+							draft.total = data.total;
+							draft.totalToday = data.totalToday;
+							draft.orderByNumber = Object.fromEntries(
+								data.orders.map((order) => [order.number, order]).reverse()
+							);
+						});
+					};
+					ws.onclose = () => {
+						if (shouldReconnect) connect();
+					};
+				};
+
+				try {
+					connect();
+				} catch (error) {
+					console.error('Ошибка при подключении к вебсокету: ', error);
+				}
+				await cacheEntryRemoved;
+				shouldReconnect = false;
+				if (ws) (ws as WebSocket).close();
+			},
+		}),
+		getOrdersWS: builder.query<IOrdersResponse, void>({
+			queryFn: () => ({
+				data: {
+					success: false,
+					orders: [],
+					total: 0,
+					totalToday: 0,
+					orderByNumber: {},
+				},
+			}),
+			async onCacheEntryAdded(_, { updateCachedData, cacheEntryRemoved }) {
+				let shouldReconnect = true;
+				let ws: WebSocket | null = null;
+
+				const connect = async () => {
+					ws = new WebSocket(`${WS_URL}/all`);
+
+					ws.onmessage = (event: MessageEvent) => {
+						const data: IOrdersResponse = JSON.parse(event.data);
+						if (!data.success) return;
+
+						updateCachedData((draft) => {
+							draft.success = data.success;
+							draft.orders = data.orders;
+							draft.total = data.total;
+							draft.totalToday = data.totalToday;
+							draft.orderByNumber = Object.fromEntries(
+								data.orders.map((order) => [order.number, order])
+							);
+						});
+					};
+
+					ws.onclose = () => {
+						if (shouldReconnect) {
+							setTimeout(connect, 2000);
+						}
+					};
+				};
+
+				try {
+					connect();
+				} catch (error) {
+					console.error('Ошибка при подключении к вебсокету: ', error);
+				}
+
+				await cacheEntryRemoved;
+				shouldReconnect = false;
+				if (ws) (ws as WebSocket).close();
+			},
+		}),
 		getIngredients: builder.query<ITransformResponseIngredients, void>({
-			query: () => '/ingredients',
+			query: () => `${BASE_URL}/ingredients`,
 			transformResponse: (response: FetchedIngredients) => {
 				const buns: IngredientsProp[] = [];
 				const sauces: IngredientsProp[] = [];
@@ -51,16 +160,20 @@ export const appApi = createApi({
 						? sauces.push(item)
 						: main.push(item);
 				});
+				const ingredientById = Object.fromEntries(
+					response.data.map((ingredient) => [ingredient._id, ingredient])
+				);
 				return {
 					ingredients: { buns, sauces, main },
 					data: response.data,
+					ingredientById,
 				};
 			},
 		}),
 		confirmOrder: builder.mutation<IOrderConfirmResponse, IOrderConfirmRequest>(
 			{
 				query: (ingredients) => ({
-					url: '/orders',
+					url: `${BASE_URL}/orders`,
 					method: 'POST',
 					headers: [['Authorization', `Bearer ${getCookie('accessToken')}`]],
 					body: {
@@ -71,7 +184,7 @@ export const appApi = createApi({
 		),
 		register: builder.mutation<IRegisterSuccessResponse, IRegisterRequest>({
 			query: (body) => ({
-				url: 'auth/register',
+				url: `${BASE_URL}/auth/register`,
 				method: 'POST',
 				body,
 			}),
@@ -85,7 +198,7 @@ export const appApi = createApi({
 		}),
 		login: builder.mutation<IRegisterSuccessResponse, ILoginRequest>({
 			query: (body) => ({
-				url: 'auth/login',
+				url: `${BASE_URL}/auth/login`,
 				method: 'POST',
 				body,
 			}),
@@ -99,7 +212,7 @@ export const appApi = createApi({
 		}),
 		logout: builder.mutation<IForgotAndResetPasswordResponse, void>({
 			query: () => ({
-				url: 'auth/logout',
+				url: `${BASE_URL}/auth/logout`,
 				method: 'POST',
 				body: { token: localStorage.getItem('refreshToken') },
 			}),
@@ -148,7 +261,7 @@ export const appApi = createApi({
 			IForgotPasswordRequest
 		>({
 			query: (body) => ({
-				url: 'password-reset',
+				url: `${BASE_URL}/password-reset`,
 				method: 'POST',
 				body,
 			}),
@@ -158,14 +271,14 @@ export const appApi = createApi({
 			IResetPasswordRequest
 		>({
 			query: (body) => ({
-				url: 'password-reset/reset',
+				url: `${BASE_URL}/password-reset/reset`,
 				method: 'POST',
 				body,
 			}),
 		}),
 		updateToken: builder.mutation<void, IUpdateTokenRequest>({
 			query: () => ({
-				url: 'auth/token',
+				url: `${BASE_URL}/auth/token`,
 				method: 'POST',
 				body: localStorage.getItem('refreshToken'),
 			}),
@@ -189,4 +302,7 @@ export const {
 	useResetPasswordMutation,
 	useLoginMutation,
 	useLogoutMutation,
+	useGetOrdersWSQuery,
+	useGetOrderByNumberQuery,
+	useGetPersonalOrderWsQuery,
 } = appApi;

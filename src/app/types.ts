@@ -107,3 +107,25 @@ export interface IUpdateUser {
 	email: string;
 	password: string;
 }
+
+export interface IOrder {
+	ingredients: string[];
+	_id: string;
+	status: string;
+	number: number;
+	createdAt: string;
+	updatedAt: string;
+	name: string;
+}
+
+export interface IOrdersResponse {
+	success: boolean;
+	orders: IOrder[];
+	total: number;
+	totalToday: number;
+	orderByNumber: { [key: string]: IOrder };
+}
+
+export const isOrdersGuard = (data: unknown): data is IOrdersResponse => {
+	return data !== null && (data as IOrdersResponse).success !== undefined;
+};
