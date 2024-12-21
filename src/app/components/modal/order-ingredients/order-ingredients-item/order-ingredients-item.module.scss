@@ -1,0 +1,28 @@
+/* stylelint-disable */
+.wrapper {
+	composes: mb-4 from global;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	.wrapper_image {
+		display: flex;
+		align-items: center;
+	}
+}
+.image {
+	composes: mr-4 from global;
+	border-radius: 50%;
+	border: 2px solid #4c4cff;
+	border-radius: 50%;
+	object-fit: cover;
+	background-color: #000;
+	height: 64px;
+	width: 64px;
+	object-fit: cover;
+}
+
+.wrapper_price {
+	display: flex;
+	align-items: center;
+}
