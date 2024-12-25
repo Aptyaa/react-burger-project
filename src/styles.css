@@ -1,10 +1,3 @@
-@font-face {
-	font-family: 'JetBrainsMono';
-	src: url('../src/app/assets/fonts/JetBrainsMono-Regular.ttf') format('ttf');
-	src: url('../src/app/assets/fonts/JetBrainsMono-ExtraBold.ttf') format('ttf');
-	src: url('../src/app/assets/fonts/Iceland-Regular.ttf') format('ttf');
-}
-
 * {
 	box-sizing: border-box;
 }
@@ -12,6 +5,11 @@
 body {
 	height: 100vh;
 	font-family: 'Jet Brains Mono', sans-serif;
+}
+
+p {
+	margin: 0;
+	padding: 0;
 }
 
 .portal {

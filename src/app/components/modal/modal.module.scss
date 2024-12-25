@@ -1,8 +1,9 @@
 .modal {
-	width: 720px;
-	border-radius: 40px;
-	background-color: var(--background);
 	position: relative;
+	z-index: 999;
+	width: 720px;
+	background-color: var(--background);
+	border-radius: 40px;
 
 	.close {
 		position: absolute;

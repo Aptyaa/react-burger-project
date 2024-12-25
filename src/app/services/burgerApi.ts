@@ -1,11 +1,11 @@
 import { IFetchedUser, IUpdateUser } from '../types';
 import { extractJWTToken, getCookie } from './utils';
 
-export const BASE_URL = 'https://norma.nomoreparties.space/api/';
+export const BASE_URL = 'https://norma.nomoreparties.space/api';
 
-export const updateToken = async (): Promise<void> => {
+export const updateToken = async (): Promise<string | undefined> => {
 	try {
-		const response = await fetch(`${BASE_URL}auth/token`, {
+		const response = await fetch(`${BASE_URL}/auth/token`, {
 			method: 'POST',
 			headers: {
 				'Content-type': 'application/json',
@@ -25,11 +25,12 @@ export const updateToken = async (): Promise<void> => {
 	} catch (error) {
 		throw new Error((error as Error).message);
 	}
+	return getCookie('accessToken');
 };
 
 export const fetchUser = async (): Promise<IFetchedUser> => {
 	try {
-		const response = await fetch(`${BASE_URL}auth/user`, {
+		const response = await fetch(`${BASE_URL}/auth/user`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -47,7 +48,7 @@ export const fetchUser = async (): Promise<IFetchedUser> => {
 };
 export const updateUser = async (data: IUpdateUser): Promise<IFetchedUser> => {
 	try {
-		const response = await fetch(`${BASE_URL}auth/user`, {
+		const response = await fetch(`${BASE_URL}/auth/user`, {
 			method: 'PATCH',
 			headers: {
 				'Content-type': 'application/json',

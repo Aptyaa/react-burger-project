@@ -14,6 +14,10 @@ import {
 } from './components/protected-route-element/protected-route-element';
 import Modal from './components/modal/modal';
 import IngredientDetails from './components/modal/ingredient-details/ingredient-details';
+import Orders from './pages/orders/orders';
+import OrderIngredients from './components/modal/order-ingredients/order-ingredients';
+import Form from './pages/profile/form/form';
+import Feed from './components/feed/feed';
 
 export const App = () => {
 	const location = useLocation();
@@ -22,7 +26,6 @@ export const App = () => {
 	const handleModalClose = () => {
 		navigate(-1);
 	};
-
 	return (
 		<>
 			<AppHeader />
@@ -34,6 +37,26 @@ export const App = () => {
 							<Modal header='Детали ингредиента' closeModal={handleModalClose}>
 								<IngredientDetails />
 							</Modal>
+						}
+					/>
+					<Route
+						path='/feed/:number'
+						element={
+							<Modal closeModal={handleModalClose}>
+								<OrderIngredients />
+							</Modal>
+						}
+					/>
+					<Route
+						path='profile/orders/:number'
+						element={
+							<OnlyAuth
+								component={
+									<Modal closeModal={handleModalClose}>
+										<OrderIngredients />
+									</Modal>
+								}
+							/>
 						}
 					/>
 				</Routes>
@@ -54,14 +77,21 @@ export const App = () => {
 						path='/reset-password'
 						element={<OnlyUnAuth component={<ResetPassword />} />}
 					/>
+					<Route path='/profile' element={<OnlyAuth component={<Profile />} />}>
+						<Route index element={<Form />} />
+						<Route path='orders' element={<Feed variant='history_orders' />} />
+					</Route>
 					<Route
-						path='/profile'
-						element={<OnlyAuth component={<Profile />} />}
+						path='profile/orders/:number'
+						element={<OnlyAuth component={<OrderIngredients />} />}
 					/>
 					<Route
 						path='/ingredients/:ingredientId'
 						element={<IngredientDetails />}
 					/>
+					<Route path='feed' element={<Orders />} />
+					<Route path='feed/:number' element={<OrderIngredients />} />
+
 					<Route path='*' element={<Error404 />} />
 				</Routes>
 			</main>

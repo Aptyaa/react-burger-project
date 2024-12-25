@@ -1,10 +1,9 @@
-import React from 'react';
-import styles from './navigation.module.scss';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { NavLink } from 'react-router-dom';
 import { useLogoutMutation, appApi } from '../../../services/app-api';
 import clsx from 'clsx';
 import { useAppDispatch } from '../../../services/hooks';
+import styles from './navigation.module.scss';
 
 export default function Navigation() {
 	const [logout] = useLogoutMutation();
@@ -19,12 +18,13 @@ export default function Navigation() {
 		<div className={clsx(styles.container, 'text text_type_main-medium')}>
 			<NavLink
 				className={({ isActive }) => (isActive ? styles.isActive : '')}
+				end
 				to='/profile'>
 				Профиль
 			</NavLink>
 			<NavLink
 				className={({ isActive }) => (isActive ? styles.isActive : '')}
-				to='/order-history'>
+				to='/profile/orders'>
 				История заказов
 			</NavLink>
 			<Button
@@ -35,7 +35,7 @@ export default function Navigation() {
 				Выход
 			</Button>
 			<p className={clsx(styles.description, 'mt-20')}>
-				В этом разделе вы можете изменить свои персональные данные
+				В этом разделе вы можете &nbsp; изменить свои персональные данные
 			</p>
 		</div>
 	);

@@ -1,0 +1,15 @@
+.container {
+	height: 85%;
+	overflow: hidden;
+	overflow-y: scroll;
+}
+
+.public_orders {
+	max-width: 608px;
+}
+
+.history_orders {
+	max-width: 44.4%;
+	margin-top: 36px;
+	margin-left: calc(17.7% + 40px);
+}
