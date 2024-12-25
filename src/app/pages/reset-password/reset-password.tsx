@@ -6,7 +6,7 @@ import {
 import styles from './reset-password.module.scss';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useResetPasswordMutation } from '../../services/app-api';
-import { IResponseError, isFetchBaseQueryErrorType } from '../../types';
+import { getMessageError } from '../../services/utils';
 
 export default function ResetPassword() {
 	const [password, setPassword] = useState('');
@@ -45,11 +45,7 @@ export default function ResetPassword() {
 					onChange={(e) => setToken(e.target.value)}
 					extraClass='mb-6'
 					error={token === '' && !!error}
-					errorText={`${
-						error && isFetchBaseQueryErrorType(error)
-							? (error.data as IResponseError).message
-							: ''
-					}`}
+					errorText={getMessageError(error)}
 				/>
 
 				<Button htmlType='submit' type='primary' extraClass='mb-20'>

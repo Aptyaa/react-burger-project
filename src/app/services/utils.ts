@@ -1,4 +1,9 @@
-import { IngredientsProp } from '../types';
+import {
+	IngredientsProp,
+	IResponseError,
+	isFetchBaseQueryErrorType,
+	isSerializeError,
+} from '../types';
 
 export const extractJWTToken = (str: string): string | null => {
 	if (str.startsWith('Bearer ')) return str.split(' ')[1];
@@ -31,14 +36,6 @@ export function takeIngredientsAndReturnPrice(
 	};
 }
 
-// export function fromEntriesIngredients(ingredients: IngredientsProp[] = []): {
-// 	[key: string]: IngredientsProp;
-// } {
-// 	return Object.fromEntries(
-// 		ingredients.map((ingredient) => [ingredient._id, ingredient])
-// 	);
-// }
-
 export function fromArrayToObject<T extends { _id: unknown }>(
 	data: T[] = []
 ): { [key: string]: T } {
@@ -57,13 +54,21 @@ export function countSameIngredientInOrder(
 	);
 }
 
-// type TStatusIn = 'created' | 'pending' | 'done';
-// type TStatusOut = 'Выполнен' | 'Создан' | 'Готовится';
-
 export function translateStatus(status: string): string {
 	return status === 'created'
 		? 'Создан'
 		: status === 'done'
 		? 'Выполнен'
 		: 'Готовится';
+}
+
+export function getMessageError(error: unknown): string {
+	console.log(error);
+	if (isFetchBaseQueryErrorType(error)) {
+		return (error.data as IResponseError).message;
+	}
+
+	if (isSerializeError(error))
+		return error.message || 'Ошибка на стороне клиента';
+	return 'Неизвестная ошибка';
 }

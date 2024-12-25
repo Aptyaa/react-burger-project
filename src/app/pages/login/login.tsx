@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
 	Button,
 	Input,
@@ -9,21 +9,20 @@ import { useLoginMutation } from '../../services/app-api';
 import Loader from '../../components/loader/loader';
 import { useForm } from '../../components/hooks/useForm';
 import { ILoginRequest } from '../../types';
+import { getMessageError } from '../../services/utils';
 
 export default function Login() {
 	const { form, handleChange } = useForm({ email: '', password: '' });
-	const [login, { data, isLoading }] = useLoginMutation();
+	const [login, { data, isLoading, error }] = useLoginMutation();
 	const navigate = useNavigate();
-
 	useEffect(() => {
 		data?.success && navigate('/');
 	}, [data]);
-
 	const handleSubmit = (e: React.SyntheticEvent) => {
 		e.preventDefault();
 		login(form as unknown as ILoginRequest);
 	};
-
+	const errorText = useMemo(() => getMessageError(error), [error]);
 	const showPassword = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		const prevType = (e.currentTarget
 			.previousElementSibling as HTMLInputElement)!.type;
@@ -43,6 +42,8 @@ export default function Login() {
 					extraClass='mb-6'
 					type='email'
 					name='email'
+					error={!!error}
+					errorText={errorText}
 				/>
 				<Input
 					placeholder='Пароль'

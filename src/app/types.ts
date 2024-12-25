@@ -1,3 +1,4 @@
+import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 export interface IngredientsProp {
@@ -31,8 +32,13 @@ export interface IOrderConfirmResponse {
 
 export const isFetchBaseQueryErrorType = (
 	error: unknown
-): error is FetchBaseQueryError =>
-	(error as FetchBaseQueryError).status !== undefined;
+): error is FetchBaseQueryError => {
+	return typeof error === 'object' && error !== null && 'status' in error;
+};
+
+export const isSerializeError = (error: unknown): error is SerializedError => {
+	return typeof error === 'object' && error !== null && 'message' in error;
+};
 
 export interface IDragItemConstructor {
 	index: number;
@@ -83,7 +89,7 @@ export interface IForgotAndResetPasswordResponse {
 }
 
 export interface IResponseError {
-	success: false;
+	success: boolean;
 	message: string;
 }
 
