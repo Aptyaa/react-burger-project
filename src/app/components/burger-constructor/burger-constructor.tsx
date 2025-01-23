@@ -41,7 +41,9 @@ function BurgerConstructor() {
 	};
 
 	return (
-		<section className={`${styles.container} mt-25 pb-13`}>
+		<section
+			data-testid='test_constructor'
+			className={`${styles.container} mt-25 pb-13`}>
 			{modalIsOpen && (
 				<Modal isLoading={isLoading} closeModal={closeModal}>
 					{orderData ? (
@@ -61,6 +63,7 @@ function BurgerConstructor() {
 					<CurrencyIcon type='primary' className='ml-3' />
 				</span>
 				<Button
+					data-testid='test_button-pay'
 					onClick={handleClick}
 					disabled={order.length === 0 || bunToOrder.length === 0}
 					type={'primary'}

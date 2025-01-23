@@ -5,7 +5,7 @@ export interface IngredientsPropWithKey extends IngredientsProp {
 	key: string;
 }
 
-interface IBurger {
+export interface IBurger {
 	ingredients: {
 		bun: IngredientsPropWithKey[];
 		saucesAndMain: IngredientsPropWithKey[];
@@ -17,7 +17,7 @@ interface IBurger {
 	totalPrice: number;
 }
 
-const initialState: IBurger = {
+export const initialState: IBurger = {
 	ingredients: {
 		bun: [],
 		saucesAndMain: [],
@@ -45,8 +45,11 @@ export const burgerSlice = createSlice({
 					state.totalPrice += action.payload.price;
 				}
 			},
-			prepare: (ingredient) => ({
-				payload: { ...ingredient, key: nanoid() },
+			prepare: (ingredient: IngredientsPropWithKey) => ({
+				payload: {
+					...ingredient,
+					key: process.env.NODE_ENV === 'test' ? ingredient.key : nanoid(),
+				},
 			}),
 		},
 		deleteIngredient: (
@@ -75,6 +78,12 @@ export const burgerSlice = createSlice({
 			state,
 			action: PayloadAction<{ draggedIndex: number; targetIndex: number }>
 		) => {
+			if (
+				action.payload.draggedIndex > state.ingredients.saucesAndMain.length ||
+				action.payload.targetIndex > state.ingredients.saucesAndMain.length ||
+				action.payload.draggedIndex == action.payload.targetIndex
+			)
+				throw new Error('Не допустимые draggedIndex или targetIndex');
 			const temp = state.ingredients.saucesAndMain[action.payload.targetIndex];
 			state.ingredients.saucesAndMain[action.payload.targetIndex] =
 				state.ingredients.saucesAndMain[action.payload.draggedIndex];

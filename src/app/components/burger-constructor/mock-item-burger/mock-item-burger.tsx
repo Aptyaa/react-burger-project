@@ -6,15 +6,18 @@ interface MockItemBurgerProps {
 	position: 'top' | 'bottom' | 'center';
 	children: ReactNode;
 	dropTarget?: LegacyRef<HTMLDivElement>;
+	testid?: string;
 }
 
 export default function MockItemBurger({
 	position,
 	children,
 	dropTarget,
+	testid,
 }: MockItemBurgerProps) {
 	return (
 		<div
+			data-testid={testid}
 			ref={dropTarget}
 			className={clsx(
 				styles.container,

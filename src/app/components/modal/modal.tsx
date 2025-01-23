@@ -46,7 +46,7 @@ export default function Modal({
 					ref={modal}
 					className={`${styles.modal} text pt-10 pl-10 pr-10 pb-15`}>
 					{header && <p className='text text_type_main-large'>{header}</p>}
-					<span className={styles.close}>
+					<span data-testid='test_close-modal-btn' className={styles.close}>
 						<CloseIcon onClick={closeModal} type='primary' />
 					</span>
 					{children}

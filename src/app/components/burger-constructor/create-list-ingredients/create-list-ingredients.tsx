@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../services/hooks';
 import {
 	addIngredient,
 	deleteIngredient,
+	IngredientsPropWithKey,
 } from '../../../services/slices/burger-slice';
 import { useGetIngredientsQuery } from '../../../services/app-api';
 import BurgerConstructorElement from '../burger-constructor-element.tsx/burger-constructor-element';
@@ -18,13 +19,16 @@ function CreateListIngredients() {
 	);
 	const { data: ingredientsFetched } = useGetIngredientsQuery();
 
-	const findIngredientById = (id: string) => {
-		return ingredientsFetched?.data.find((item) => item._id === id);
-	};
 	const [, dropTargetIngredients] = useDrop<IDropItemIngredient>({
 		accept: ['sauce', 'main'],
 		drop(item) {
-			dispatch(addIngredient(findIngredientById(item.id)));
+			dispatch(
+				addIngredient(
+					ingredientsFetched?.ingredientById[
+						`${item.id}`
+					] as IngredientsPropWithKey
+				)
+			);
 		},
 	});
 	const [, dropTargetBun] = useDrop<IDropItemIngredient>({
@@ -34,13 +38,20 @@ function CreateListIngredients() {
 			if (bun[0]) {
 				dispatch(deleteIngredient(bun[0]));
 			}
-			dispatch(addIngredient(findIngredientById(item.id)));
+			dispatch(
+				addIngredient(
+					ingredientsFetched?.ingredientById[
+						`${item.id}`
+					] as IngredientsPropWithKey
+				)
+			);
 		},
 	});
 
 	const renderBun = (position: 'top' | 'bottom') => {
 		return bun.length === 0 ? (
 			<MockItemBurger
+				testid='test_target-bun'
 				dropTarget={position === 'top' ? dropTargetBun : undefined}
 				position={position}>
 				Выберите булку

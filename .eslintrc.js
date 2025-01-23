@@ -21,6 +21,7 @@ module.exports = {
 		'plugin:import/typescript',
 		'plugin:jsx-a11y/recommended',
 		'plugin:eslint-comments/recommended',
+		'plugin:cypress/recommended',
 	],
 	rules: {
 		semi: [2, 'always'],
@@ -36,4 +37,5 @@ module.exports = {
 		'jsx-a11y/no-static-element-interactions': 'off',
 		'@typescript-eslint/no-explicit-any': ['error'],
 	},
+	plugins: ['cypress'],
 };

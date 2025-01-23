@@ -36,6 +36,7 @@ export default function Login() {
 			<h2 className='mb-6'>Вход</h2>
 			<form onSubmit={handleSubmit}>
 				<Input
+					data-testid='test_input-email'
 					placeholder='E-mail'
 					value={form.email || ''}
 					onChange={handleChange}
@@ -46,6 +47,7 @@ export default function Login() {
 					errorText={errorText}
 				/>
 				<Input
+					data-testid='test_input-password'
 					placeholder='Пароль'
 					type='password'
 					value={form.password || ''}
@@ -55,7 +57,11 @@ export default function Login() {
 					onIconClick={showPassword}
 					name='password'
 				/>
-				<Button htmlType='submit' type='primary' extraClass='mb-20'>
+				<Button
+					data-testid='test_button-login'
+					htmlType='submit'
+					type='primary'
+					extraClass='mb-20'>
 					Войти
 				</Button>
 			</form>

@@ -23,7 +23,7 @@ function BurgerIngredients() {
 	if (error) return <h1>Ошибка загрузки: {error.message}</h1>;
 
 	return (
-		<section className={styles.container}>
+		<section data-testid='test_ingredients' className={styles.container}>
 			<div className='pt-10'>
 				<p className='text text_type_main-large mb-5'>Соберите бургер</p>
 				<Tabs

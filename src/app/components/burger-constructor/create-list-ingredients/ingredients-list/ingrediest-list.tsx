@@ -12,7 +12,7 @@ interface IngredientsListProps {
 export const IngredientsList = forwardRef(
 	({ saucesAndMain }: IngredientsListProps, ref: LegacyRef<HTMLDivElement>) => {
 		return (
-			<div ref={ref}>
+			<div data-testid='test_target-main' ref={ref}>
 				{saucesAndMain.length === 0 ? (
 					<MockItemBurger position='center'>Выберите начинку</MockItemBurger>
 				) : (
