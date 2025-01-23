@@ -1,4 +1,5 @@
 import {} from 'cypress';
+import '@4tw/cypress-drag-drop';
 describe('Application', () => {
 	beforeEach(() => {
 		cy.visit('http://localhost:8080');
