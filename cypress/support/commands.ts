@@ -36,3 +36,51 @@ import '@4tw/cypress-drag-drop';
 //     }
 //   }
 // }
+
+Cypress.Commands.add('mockApi', () => {
+	cy.intercept('POST', 'auth/login', { fixture: 'login' });
+	cy.intercept('GET', 'ingredients', { fixture: 'ingredients' });
+	cy.intercept('GET', 'auth/user', { fixture: 'user' });
+	cy.intercept('POST', 'orders', { fixture: 'order' });
+});
+
+Cypress.Commands.add('getByTestId', (selector) => {
+	return cy.get(`[data-testid=${selector}]`);
+});
+Cypress.Commands.add('getByDataAtt', (attributes: Record<string, string>) => {
+	const selector = Object.entries(attributes)
+		.map(([key, value]) => `[data-${key}=${value}]`)
+		.join(' ');
+	return cy.get(selector);
+});
+Cypress.Commands.add('clearBrowser', () => {
+	cy.clearAllLocalStorage();
+	cy.clearAllCookies();
+});
+Cypress.Commands.add('login', (email: string, password: string) => {
+	cy.visit(`login`);
+	cy.get('[data-testid=test_input-email]').type(`${email}`);
+	cy.get('[data-testid=test_input-password]').type(`${password}{enter}`);
+});
+
+Cypress.Commands.add(
+	'dragAndDrop',
+	(draggedElement: string, targetTestId: string) => {
+		return cy.get(draggedElement).drag(`[data-testid=${targetTestId}]`);
+	}
+);
+
+declare global {
+	namespace Cypress {
+		interface Chainable {
+			mockApi: () => Chainable<void>;
+			getByTestId: (selector: string) => Chainable<JQuery<HTMLElement>>;
+			getByDataAtt: (
+				attributes: Record<string, string>
+			) => Chainable<JQuery<HTMLElement>>;
+			clearBrowser: () => Chainable<void>;
+			login: (email: string, password: string) => Chainable<void>;
+			dragAndDrop: (draggableId: string, targetSelector: string) => boolean;
+		}
+	}
+}
