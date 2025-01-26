@@ -15,7 +15,7 @@ export const updateToken = async (): Promise<string | undefined> => {
 			}),
 		});
 		if (!response.ok) {
-			throw new Error('Failed update token');
+			throw new Error(`Ошибка: ${response.status}`);
 		}
 		const data = await response.json();
 		localStorage.setItem('refreshToken', data.refreshToken);
@@ -23,7 +23,7 @@ export const updateToken = async (): Promise<string | undefined> => {
 			data.accessToken
 		)}; max-age=1200`;
 	} catch (error) {
-		throw new Error((error as Error).message);
+		throw new Error((error as Error).message || 'Неизвестная ошибка');
 	}
 	return getCookie('accessToken');
 };
@@ -38,7 +38,7 @@ export const fetchUser = async (): Promise<IFetchedUser> => {
 			},
 		});
 		if (!response.ok) {
-			throw Error('Failed to fetch user');
+			throw Error(`Ошибка: ${response.status}`);
 		}
 		const data = (await response.json()) as IFetchedUser;
 		return data;
@@ -56,7 +56,7 @@ export const updateUser = async (data: IUpdateUser): Promise<IFetchedUser> => {
 			},
 			body: JSON.stringify({ ...data }),
 		});
-		if (!response.ok) throw new Error('Failed update user');
+		if (!response.ok) throw new Error(`Ошибка: ${response.status}`);
 		const result = (await response.json()) as IFetchedUser;
 		return result;
 	} catch (error) {

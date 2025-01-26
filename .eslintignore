@@ -6,3 +6,6 @@ build
 dist
 webpack/*.js
 package*.json
+coverage
+cypress
+cypress.config.ts

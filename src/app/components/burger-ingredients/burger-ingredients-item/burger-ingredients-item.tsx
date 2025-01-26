@@ -39,7 +39,11 @@ function BurgerIngredientsItem(props: BurgerIngredientItemProps) {
 			to={`/ingredients/${id}`}
 			state={{ background: location }}
 			className={styles.link}>
-			<div ref={dragRef} data-id={id} className={clsx(styles.item)}>
+			<div
+				data-testid='test_item'
+				ref={dragRef}
+				data-id={id}
+				className={clsx(styles.item)}>
 				<img src={img} alt={name} />
 				<span className={count.length !== 0 ? styles.count : undefined}>
 					{count.length !== 0 && count.length}
