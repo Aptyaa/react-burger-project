@@ -1,0 +1,37 @@
+name: CI/CD pipeline
+on:
+  push:
+    branches: -main
+  pull_request:
+    branches: -main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm install
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Run eslint
+        run: npm run lint || true
+      - name: Run stylelint
+        run: npm run stylelint || true
+      - name: Run tests jests
+        run: npm run jest
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm start
+          wait-on: http://localhost:8080
+          wait-on-timeout: 120
