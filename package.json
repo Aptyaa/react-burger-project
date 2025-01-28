@@ -67,6 +67,9 @@
 		"webpack-cli": "^5.0.2",
 		"webpack-dev-server": "^4.15.0"
 	},
+	"engines": {
+		"node": "18"
+	},
 	"scripts": {
 		"build": "cross-env NODE_ENV=production webpack --config webpack/webpack.config.js --env env=prod",
 		"start": "webpack serve --config webpack/webpack.config.js --env env=dev",
@@ -86,6 +89,7 @@
 		"@ya.praktikum/react-developer-burger-ui-components": "^1.14.2",
 		"clsx": "^2.1.1",
 		"core-js": "^3.38.1",
+		"node": "^18.20.6",
 		"react": "^18.2.0",
 		"react-dnd": "^16.0.1",
 		"react-dnd-html5-backend": "^16.0.1",
