@@ -79,6 +79,7 @@ export default [
 			'no-unused-vars': 'off',
 			'import/namespace': 'off',
 			'@typescript-eslint/no-unused-vars': ['error'],
+			'@typescript-eslint/no-unused-expressions': 'off',
 			'@typescript-eslint/no-empty-function': 'off',
 			'@typescript-eslint/no-var-requires': 'off',
 			'react/prop-types': 'off',
