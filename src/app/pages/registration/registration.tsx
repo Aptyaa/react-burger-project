@@ -2,7 +2,7 @@ import {
 	Button,
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styles from './registration.module.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRegisterMutation } from '../../services/app-api';
@@ -19,8 +19,12 @@ export default function Registration() {
 	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
 		await register(form as unknown as IRegisterRequest);
-		data?.success && navigate('/login');
 	};
+
+	useEffect(() => {
+		data?.success && navigate('/login');
+	}, [data]);
+
 	const errorText = useMemo(() => getMessageError(error), [error]);
 	const showPassword = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		const prevType = (e.currentTarget
